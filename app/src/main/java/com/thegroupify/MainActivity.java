@@ -7,11 +7,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.thegroupify.fragments.login;
+import com.thegroupify.library.library;
 
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
     private String currentFragment;
 
@@ -20,6 +22,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.loadFra(new login());
+            this.library().showError("test");
     }
 
     @Override
@@ -47,5 +50,17 @@ public class MainActivity extends FragmentActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.ok_close_dialog:
+                this.library().dialog().closeCheckDialog();
+            break;
+        }
+    }
+    public library library(){
+        return new library(this);
     }
 }
