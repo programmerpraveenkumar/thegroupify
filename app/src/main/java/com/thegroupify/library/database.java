@@ -4,18 +4,20 @@ package com.thegroupify.library;
  * Created by pravaeen kumar new on 21-07-15.
  */
 
-        import android.content.Context;
-        import android.database.sqlite.SQLiteDatabase;
-        import android.database.sqlite.SQLiteOpenHelper;
-        import java.io.File;
-        import java.io.FileOutputStream;
-        import java.io.InputStream;
-        import java.io.OutputStream;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class database extends SQLiteOpenHelper {
     private static String db_name = "1.db";
     Context c;
     private   static String  db_path,db_with_name;
+    SQLiteDatabase dbObj;
     public database(Context context) {
         super(context,db_name, null,1);
         c = context;
@@ -26,6 +28,7 @@ public class database extends SQLiteOpenHelper {
             db_path = "data/data/"+c.getPackageName()+"/databases/";
         }
         db_with_name = db_path+db_name;
+        this.dbObj = SQLiteDatabase.openDatabase(db_with_name,null,SQLiteDatabase.OPEN_READWRITE);
     }
 
     @Override
@@ -36,7 +39,7 @@ public class database extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
     public Boolean setUp(){
-        Boolean status = true,new_database = false;
+        Boolean status = true,new_database = true;
         if(new_database){
             this._CreateDatabase();
         }
@@ -48,6 +51,31 @@ public class database extends SQLiteOpenHelper {
         }
         return status;
     }
+
+    public Cursor oneFetchQuery(String s){
+        try{
+            Cursor c = this.dbObj.rawQuery(s,null);
+            if(c.moveToFirst()){
+                return c;
+            }
+            return null;
+        }catch(Exception e){
+            return null;
+        }
+    }
+
+    public Boolean exeQuery(String s){
+        Boolean status=false;
+        try{
+            this.dbObj.execSQL(s);
+            status=true;
+        }
+        catch(Exception e){
+            this.library().developerError("error while executing query " + s + " " + e.getMessage());
+        }
+        return status;
+    }
+
 
     private Boolean _checkDatabase(){
         Boolean status = false;
@@ -66,10 +94,10 @@ public class database extends SQLiteOpenHelper {
         }
         return status;
     }
-    public static SQLiteDatabase test(){
+    /*public static SQLiteDatabase test(){
         SQLiteDatabase Read = SQLiteDatabase.openDatabase(db_with_name,null,SQLiteDatabase.OPEN_READWRITE);
         return Read;
-    }
+    }*/
 
     private Boolean _CreateDatabase(){
         Boolean status = false;

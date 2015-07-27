@@ -40,15 +40,8 @@ public class dialogBox implements View.OnClickListener {
         TextView errorMessage = (TextView)d.findViewById(R.id.error_message);
         errorMessage.setText(message);
         ok_close_dialog.setOnClickListener(this);
-       /* ok_close_dialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeCheckDialog();
-            }
-        });*/
         d.show();
     }
-
 
     public Dialog currentDialogObj(){
         d = new Dialog(c);

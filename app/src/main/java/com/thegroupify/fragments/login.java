@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
 import com.thegroupify.R;
 
 /**
@@ -14,6 +16,8 @@ public class login extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.login,container,false);
+        Button create_account = (Button)v.findViewById(R.id.create_account);
+        create_account.setOnClickListener((View.OnClickListener) getActivity());
         return v;
     }
 }
