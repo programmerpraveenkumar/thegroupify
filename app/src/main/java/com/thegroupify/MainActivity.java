@@ -12,7 +12,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.thegroupify.fragments.feeds;
 import com.thegroupify.fragments.login;
+import com.thegroupify.fragments.search_join_group;
 import com.thegroupify.library.getServerResult;
 import com.thegroupify.library.library;
 import com.thegroupify.library.serverConnection;
@@ -29,10 +31,21 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(this.library().setUP())
-            this.loadFra(new login());
-        else{
-            this.library().showError("setup Error");
+        try {
+            if (this.library().setUP()) {
+                if (this._userExist()) {
+                    if (this._joinedGroupCount() > 0)
+                        this.loadFra(new feeds());
+                    else
+                        this.loadFra(new search_join_group());
+                } else {
+                    this.loadFra(new login());
+                }
+            } else {
+                this.library().showError("setup Error");
+            }
+        }catch (Exception e){
+            this.library().developerError("error "+e.getMessage());
         }
     }
 
@@ -75,6 +88,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if(mail.length() > 4){
                     HashMap<String,String> create = new HashMap<String, String>();
                     create.put("email",mail);
+                    this._setText(R.id.loading_status, "Creating account!!Please wait...");
                     new serverConnection(R.string.create_account,this,"user/create",create);
                 }else{
                     this.library().toastMessage("Please Enter Valid Email");
@@ -97,10 +111,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             switch (type){
                 case R.string.create_account:
                     if(this.library().db().exeQuery("insert into user(id,mail,join_on,device_id)values('"+result.getString("id")+"','"+result.getString("mail")+"','"+result.getString("join_on")+"','"+result.getString("device_id")+"')")){
-                        this.library().toastMessage("Account created!!!");
+                        this._setText(R.id.loading_status,"Successfull!!Account created!!");
+                        //this.library().toastMessage("Account created!!!");
+                        Cursor c = this.library().db().oneFetchQuery("select id from user");
+                        this.library().writeUserId(c.getString(c.getColumnIndex("id")));
+                        this._setText(R.id.loading_status, "Successfull !!Please Wait !!!");
+                        this.loadFra(new search_join_group());
                     }
-                    Cursor c = this.library().db().oneFetchQuery("select mail from user");
-                    this.library().developerError("register mail "+c.getString(c.getColumnIndex("mail")));
                 break;
                 default:
                     this.library().developerError(this.getString(type) + " does not have any result type");
@@ -109,5 +126,34 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             this.library().toastMessage(e.getMessage());
             this.library().developerError("server Result is "+output+" error "+e.getMessage());
         }
+    }
+    private Boolean _userExist(){
+        Boolean status = false;
+        try{
+            if(!this.library().getUserId().equals("empty")){
+                Cursor c = this.library().db().oneFetchQuery("select id from `user` where id=\'"+this.library().getUserId()+"\'");
+                this.library().developerError("user count is "+c.getCount()+" and  user id is "+this.library().getUserId());
+                status  = (c.getCount() > 0)?true:false;
+            }
+        }catch (Exception e){
+            this.library().developerError("may be the user id is not available "+this.library().getUserId());
+            status = false;
+        }
+        return  status;
+    }
+    private int _joinedGroupCount(){
+        int count = 0;
+        try{
+            Cursor c = this.library().db().oneFetchQuery("select id from `group`");
+            count = c.getCount();
+        }catch (Exception e){
+
+        }
+        return count;
+    }
+    private void _setText(int id,String val){
+        TextView tmp = (TextView)findViewById(id);
+        tmp.setVisibility(View.VISIBLE);
+        tmp.setText(val);
     }
 }

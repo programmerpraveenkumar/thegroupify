@@ -15,6 +15,7 @@ import java.io.OutputStream;
 
 public class database extends SQLiteOpenHelper {
     private static String db_name = "1.db";
+    private  Boolean new_database = false;
     Context c;
     private   static String  db_path,db_with_name;
     SQLiteDatabase dbObj;
@@ -39,8 +40,9 @@ public class database extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
     public Boolean setUp(){
-        Boolean status = true,new_database = true;
+        Boolean status = true;
         if(new_database){
+            this.library().developerError("started creating new db");
             this._CreateDatabase();
         }
         if(!this._checkDatabase()){

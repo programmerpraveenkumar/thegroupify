@@ -1,6 +1,7 @@
 package com.thegroupify.library;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class library {
         }
         return obj;
     }
+
     public Boolean setUP(){
         Boolean status = true;
         try {
@@ -53,6 +55,30 @@ public class library {
         }
         return status;
     }
+
+    private SharedPreferences getShare(Context c){
+        SharedPreferences s = c.getSharedPreferences("groupify", Context.MODE_PRIVATE);
+        return s;
+    }
+
+    private void writeIds(Context c,String id,String idName){
+        try {
+            SharedPreferences s = this.getShare(c);
+            s.edit().putString(idName, id).commit();
+        }catch (Exception e){
+            this.developerError(e.getMessage());
+        }
+    }
+
+    public String getUserId(){
+        SharedPreferences s=this.getShare(c);
+        return s.getString("user_id", "empty");
+    }
+
+    public void writeUserId(String shopId){
+        this.writeIds(c,shopId,"user_id");
+    }
+
     public database db(){
         database db = new database(this.c);
         return db;
