@@ -89,7 +89,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     HashMap<String,String> create = new HashMap<String, String>();
                     create.put("email",mail);
                     this._setText(R.id.loading_status, "Creating account!!Please wait...");
-                    new serverConnection(R.string.create_account,this,"user/create",create);
+                    new serverConnection(R.string.s_result_create_account,this,"user/create",create);
                 }else{
                     this.library().toastMessage("Please Enter Valid Email");
                 }
@@ -109,7 +109,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 throw new Exception("nothing is received from server");
             }
             switch (type){
-                case R.string.create_account:
+                case R.string.s_result_create_account:
                     if(this.library().db().exeQuery("insert into user(id,mail,join_on,device_id)values('"+result.getString("id")+"','"+result.getString("mail")+"','"+result.getString("join_on")+"','"+result.getString("device_id")+"')")){
                         this._setText(R.id.loading_status,"Successfull!!Account created!!");
                         //this.library().toastMessage("Account created!!!");
@@ -147,7 +147,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             Cursor c = this.library().db().oneFetchQuery("select id from `group`");
             count = c.getCount();
         }catch (Exception e){
-
+            count = 0;
         }
         return count;
     }

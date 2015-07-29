@@ -11,7 +11,7 @@ import org.json.JSONObject;
  * Created by pravaeen kumar new on 21-07-15.
  */
 public class library {
-    Context c;
+    Context c  = null;
     public library(){
 
     }
@@ -71,7 +71,7 @@ public class library {
     }
 
     public String getUserId(){
-        SharedPreferences s=this.getShare(c);
+        SharedPreferences s = this.getShare(c);
         return s.getString("user_id", "empty");
     }
 
