@@ -26,7 +26,7 @@ public class serverConnection extends AsyncTask<String ,String ,String >  {
     getServerResult getServerResult;
     String result = "",connectingURL;
     List<NameValuePair> UrlParameters;
-    Boolean errorStatus = false;
+    Boolean errorStatus = true;
     int type;
     HashMap<String ,String> tempUrlPair;
     String serverUrl = "http://10.0.2.2/thegroupify/";

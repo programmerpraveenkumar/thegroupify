@@ -132,7 +132,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         try{
             if(!this.library().getUserId().equals("empty")){
                 Cursor c = this.library().db().oneFetchQuery("select id from `user` where id=\'"+this.library().getUserId()+"\'");
-                this.library().developerError("user count is "+c.getCount()+" and  user id is "+this.library().getUserId());
+                //this.library().developerError("user count is "+c.getCount()+" and  user id is "+this.library().getUserId());
                 status  = (c.getCount() > 0)?true:false;
             }
         }catch (Exception e){
